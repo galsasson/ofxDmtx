@@ -21,6 +21,8 @@ public:
 		int outputSize;
 		string output;
 		vector<ofDefaultVec2> corners;
+		ofMatrix3x3 fit2raw;
+		ofMatrix3x3 raw2fit;
 	};
 	typedef vector<Barcode> DecodeResult;
 	static DecodeResult decode(ofPixels& pixels);

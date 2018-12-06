@@ -79,11 +79,18 @@ ofxDmtx::DecodeResult ofxDmtx::decode(ofPixels& pixels)
 		dmtxMatrix3VMultiply(&trImage, &trCode, reg->fit2raw);
 		dmtxMatrix3VMultiply(&brImage, &brCode, reg->fit2raw);
 		dmtxMatrix3VMultiply(&blImage, &blCode, reg->fit2raw);
-		
 		b.corners.push_back(ofDefaultVec2(tlImage.X, pixels.getHeight()-tlImage.Y));
 		b.corners.push_back(ofDefaultVec2(trImage.X, pixels.getHeight()-trImage.Y));
 		b.corners.push_back(ofDefaultVec2(brImage.X, pixels.getHeight()-brImage.Y));
 		b.corners.push_back(ofDefaultVec2(blImage.X, pixels.getHeight()-blImage.Y));
+
+		// add code transformation matrices
+		b.fit2raw = ofMatrix3x3(reg->fit2raw[0][0], reg->fit2raw[1][0], reg->fit2raw[2][0],
+								reg->fit2raw[0][1], reg->fit2raw[1][1], reg->fit2raw[2][1],
+								reg->fit2raw[0][2], reg->fit2raw[1][2], reg->fit2raw[2][2]);
+		b.raw2fit = ofMatrix3x3(reg->raw2fit[0][0], reg->raw2fit[1][0], reg->raw2fit[2][0],
+								reg->raw2fit[0][1], reg->raw2fit[1][1], reg->raw2fit[2][1],
+								reg->raw2fit[0][2], reg->raw2fit[1][2], reg->raw2fit[2][2]);
 
 		res.push_back(b);
 		
