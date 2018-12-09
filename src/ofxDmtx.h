@@ -25,7 +25,7 @@ public:
 		ofMatrix3x3 raw2fit;
 	};
 	typedef vector<Barcode> DecodeResult;
-	static DecodeResult decode(ofPixels& pixels);
+	static DecodeResult decode(ofPixels& pixels, float timeout=0);	// no timeout by default
 };
 
 

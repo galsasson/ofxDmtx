@@ -8,7 +8,7 @@
 
 #include "ofxDmtx.h"
 
-ofxDmtx::DecodeResult ofxDmtx::decode(ofPixels& pixels)
+ofxDmtx::DecodeResult ofxDmtx::decode(ofPixels& pixels, float timeout)
 {
 	DecodeResult res;
 	DmtxImage      *img;
@@ -27,7 +27,16 @@ ofxDmtx::DecodeResult ofxDmtx::decode(ofPixels& pixels)
 		return res;
 	}
 	
-	reg = dmtxRegionFindNext(dec, NULL);
+	if (timeout==0) {
+		reg = dmtxRegionFindNext(dec, NULL);
+	}
+	else {
+		time_t sec = (int)floor(timeout);
+		unsigned long msec = (unsigned long)((timeout-(int)timeout)*1000);
+		DmtxTime endtime = dmtxTimeNow();
+		endtime = dmtxTimeAdd(endtime, sec*1000+msec);
+		reg = dmtxRegionFindNext(dec, &endtime);
+	}
 	if (reg != NULL) {
 		Barcode b;
 		msg = dmtxDecodeMatrixRegion(dec, reg, DmtxUndefined);
@@ -73,7 +82,7 @@ ofxDmtx::DecodeResult ofxDmtx::decode(ofPixels& pixels)
 		b.output = string(message);
 		
 		// add corners
-		DmtxVector2 tlCode = {0,0}, trCode={1,0}, brCode={1,1}, blCode={0,1};
+		DmtxVector2 tlCode={0,0}, trCode={1,0}, brCode={1,1}, blCode={0,1};
 		DmtxVector2 tlImage,trImage,brImage,blImage;
 		dmtxMatrix3VMultiply(&tlImage, &tlCode, reg->fit2raw);
 		dmtxMatrix3VMultiply(&trImage, &trCode, reg->fit2raw);
