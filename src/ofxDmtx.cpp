@@ -30,18 +30,23 @@ ofxDmtx::DecodeResult ofxDmtx::decode(ofPixels& pixels, float timeout, float edg
 	dmtxDecodeSetProp(dec, DmtxPropEdgeThresh, edgeThresh);
 	dmtxDecodeSetProp(dec, DmtxPropSquareDevn, squareDeviationAngle);
 
-	
-	if (timeout==0) {
-		reg = dmtxRegionFindNext(dec, NULL);
-	}
-	else {
-		time_t sec = (int)floor(timeout);
-		unsigned long msec = (unsigned long)((timeout-(int)timeout)*1000);
-		DmtxTime endtime = dmtxTimeNow();
-		endtime = dmtxTimeAdd(endtime, sec*1000+msec);
-		reg = dmtxRegionFindNext(dec, &endtime);
-	}
-	if (reg != NULL) {
+	while(true) {
+		if (timeout==0) {
+			reg = dmtxRegionFindNext(dec, NULL);
+		}
+		else {
+			time_t sec = (int)floor(timeout);
+			unsigned long msec = (unsigned long)((timeout-(int)timeout)*1000);
+			DmtxTime endtime = dmtxTimeNow();
+			endtime = dmtxTimeAdd(endtime, sec*1000+msec);
+			reg = dmtxRegionFindNext(dec, &endtime);
+		}
+		
+		if (reg == NULL) {
+			// no more codes could be found
+			break;
+		}
+		
 		Barcode b;
 		msg = dmtxDecodeMatrixRegion(dec, reg, DmtxUndefined);
 		if (msg==NULL) {
@@ -106,7 +111,6 @@ ofxDmtx::DecodeResult ofxDmtx::decode(ofPixels& pixels, float timeout, float edg
 								reg->raw2fit[0][2], reg->raw2fit[1][2], reg->raw2fit[2][2]);
 
 		res.push_back(b);
-		
 		dmtxRegionDestroy(&reg);
 	}
 	
