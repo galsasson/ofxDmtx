@@ -8,7 +8,7 @@
 
 #include "ofxDmtx.h"
 
-ofxDmtx::DecodeResult ofxDmtx::decode(ofPixels& pixels, float timeout)
+ofxDmtx::DecodeResult ofxDmtx::decode(ofPixels& pixels, float timeout, float edgeThresh, float squareDeviationAngle)
 {
 	DecodeResult res;
 	DmtxImage      *img;
@@ -26,6 +26,10 @@ ofxDmtx::DecodeResult ofxDmtx::decode(ofPixels& pixels, float timeout)
 		dmtxImageDestroy(&img);
 		return res;
 	}
+	
+	dmtxDecodeSetProp(dec, DmtxPropEdgeThresh, edgeThresh);
+	dmtxDecodeSetProp(dec, DmtxPropSquareDevn, squareDeviationAngle);
+
 	
 	if (timeout==0) {
 		reg = dmtxRegionFindNext(dec, NULL);
