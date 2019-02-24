@@ -130,7 +130,7 @@ EncodeNextChunk(DmtxEncodeStream *stream, int scheme, int option, int sizeIdxReq
    /* Change to target scheme if necessary */
    if(stream->currentScheme != scheme)
    {
-      EncodeChangeScheme(stream, scheme, DmtxUnlatchExplicit); CHKERR;
+      EncodeChangeScheme(stream, (DmtxScheme)scheme, DmtxUnlatchExplicit); CHKERR;
       CHKSCHEME(scheme);
    }
 

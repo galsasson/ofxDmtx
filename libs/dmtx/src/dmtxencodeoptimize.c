@@ -94,7 +94,7 @@ EncodeOptimizeBest(DmtxByteList *input, DmtxByteList *output, int sizeIdxRequest
    DmtxByteList ctxTemp = dmtxByteListBuild(ctxTempStorage, sizeof(ctxTempStorage));
 
    /* Initialize all streams with their own output storage */
-   for(state = 0; state < SchemeStateCount; state++)
+   for(state = (SchemeState)0; state < SchemeStateCount; state = SchemeState(int(state)+1))
    {
       outputsBest[state] = dmtxByteListBuild(outputsBestStorage[state], sizeof(outputsBestStorage[state]));
       outputsTemp[state] = dmtxByteListBuild(outputsTempStorage[state], sizeof(outputsTempStorage[state]));
@@ -133,7 +133,7 @@ EncodeOptimizeBest(DmtxByteList *input, DmtxByteList *output, int sizeIdxRequest
       StreamAdvanceFromBest(streamsTemp, streamsBest, Base256, sizeIdxRequest);
 
       /* Overwrite best streams with new results */
-      for(state = 0; state < SchemeStateCount; state++)
+      for(state = (SchemeState)0; state < SchemeStateCount; state = SchemeState(int(state)+1))
       {
          if(streamsBest[state].status != DmtxStatusComplete)
             StreamCopy(&(streamsBest[state]), &(streamsTemp[state]));
@@ -158,7 +158,7 @@ EncodeOptimizeBest(DmtxByteList *input, DmtxByteList *output, int sizeIdxRequest
 
    /* Choose the overall winner */
    winner = NULL;
-   for(state = 0; state < SchemeStateCount; state++)
+   for(state = (SchemeState)0; state < SchemeStateCount; state = SchemeState(int(state)+1))
    {
       if(streamsBest[state].status == DmtxStatusComplete)
       {
@@ -199,7 +199,7 @@ StreamAdvanceFromBest(DmtxEncodeStream *streamsNext, DmtxEncodeStream *streamsBe
    DmtxEncodeStream *targetStream = &(streamsNext[targetState]);
 
    streamTemp.output = &outputTemp; /* Set directly instead of calling StreamInit() */
-   targetScheme = GetScheme(targetState);
+   targetScheme = (DmtxScheme)GetScheme(targetState);
 
    if(targetState == AsciiFull)
       encodeOption = DmtxEncodeFull;
@@ -208,7 +208,7 @@ StreamAdvanceFromBest(DmtxEncodeStream *streamsNext, DmtxEncodeStream *streamsBe
    else
       encodeOption = DmtxEncodeNormal;
 
-   for(fromState = 0; fromState < SchemeStateCount; fromState++)
+   for(fromState = (SchemeState)0; fromState < SchemeStateCount; fromState = SchemeState(int(fromState)+1))
    {
       if(streamsBest[fromState].status != DmtxStatusEncoding ||
             ValidStateSwitch(fromState, targetState) == DmtxFalse)
@@ -409,7 +409,7 @@ GetScheme(int state)
          scheme = DmtxSchemeBase256;
          break;
       default:
-         scheme = DmtxUndefined;
+         scheme = (DmtxScheme)DmtxUndefined;
          break;
    }
 
@@ -424,8 +424,8 @@ static DmtxBoolean
 ValidStateSwitch(int fromState, int targetState)
 {
    DmtxBoolean validStateSwitch;
-   DmtxScheme fromScheme = GetScheme(fromState);
-   DmtxScheme toScheme = GetScheme(targetState);
+   DmtxScheme fromScheme = (DmtxScheme)GetScheme(fromState);
+   DmtxScheme toScheme = (DmtxScheme)GetScheme(targetState);
 
    if(fromScheme == toScheme && fromState != targetState &&
          fromState != AsciiFull && targetState != AsciiFull)

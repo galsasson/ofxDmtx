@@ -51,7 +51,7 @@ DecodeDataStream(DmtxMessage *msg, int sizeIdx, unsigned char *outputStart)
 
    while(ptr < dataEnd) {
 
-      encScheme = GetEncodationScheme(*ptr);
+      encScheme = (DmtxScheme)GetEncodationScheme(*ptr);
       if(encScheme != DmtxSchemeAscii)
          ptr++;
 

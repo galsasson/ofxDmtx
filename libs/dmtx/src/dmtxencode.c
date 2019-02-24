@@ -95,7 +95,7 @@ dmtxEncodeSetProp(DmtxEncode *enc, int prop, int value)
 
       /* Encoding details */
       case DmtxPropScheme:
-         enc->scheme = value;
+         enc->scheme = (DmtxScheme)value;
          break;
       case DmtxPropSizeRequest:
          if(value == DmtxSymbolShapeAuto)
@@ -179,7 +179,7 @@ dmtxEncodeDataMatrix(DmtxEncode *enc, int inputSize, unsigned char *inputString)
    /* Future: EncodeDataCodewords(&stream) ... */
 
    /* Encode input string into data codewords */
-   sizeIdx = EncodeDataCodewords(&input, &output, enc->sizeIdxRequest, enc->scheme, enc->fnc1);
+   sizeIdx = EncodeDataCodewords(&input, &output, enc->sizeIdxRequest, (DmtxScheme)enc->scheme, enc->fnc1);
    if(sizeIdx == DmtxUndefined || output.length <= 0)
       return DmtxFail;
 
