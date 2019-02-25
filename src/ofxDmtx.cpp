@@ -87,10 +87,10 @@ ofxDmtx::DecodeResult ofxDmtx::decode(ofPixels& pixels, float timeout, float edg
 #endif
 		// add message
 		char* message = new char[msg->outputSize+1];
-		strset(message, 0);
+		memset(message, 0, msg->outputSize+1);
 		strncpy(message, (const char*)(msg->output), msg->outputSize);
 		b.output = string(message);
-		delete message;
+		delete[] message;
 		
 		// add corners
 		DmtxVector2 tlCode={0,0}, trCode={1,0}, brCode={1,1}, blCode={0,1};

@@ -94,7 +94,7 @@ EncodeOptimizeBest(DmtxByteList *input, DmtxByteList *output, int sizeIdxRequest
    DmtxByteList ctxTemp = dmtxByteListBuild(ctxTempStorage, sizeof(ctxTempStorage));
 
    /* Initialize all streams with their own output storage */
-   for(state = (SchemeState)0; state < SchemeStateCount; state = SchemeState(int(state)+1))
+   for(state = (enum SchemeState)0; state < SchemeStateCount; state = (enum SchemeState)((int)state+1))
    {
       outputsBest[state] = dmtxByteListBuild(outputsBestStorage[state], sizeof(outputsBestStorage[state]));
       outputsTemp[state] = dmtxByteListBuild(outputsTempStorage[state], sizeof(outputsTempStorage[state]));
@@ -133,7 +133,7 @@ EncodeOptimizeBest(DmtxByteList *input, DmtxByteList *output, int sizeIdxRequest
       StreamAdvanceFromBest(streamsTemp, streamsBest, Base256, sizeIdxRequest);
 
       /* Overwrite best streams with new results */
-      for(state = (SchemeState)0; state < SchemeStateCount; state = SchemeState(int(state)+1))
+      for(state = (enum SchemeState)0; state < SchemeStateCount; state = (enum SchemeState)((int)state+1))
       {
          if(streamsBest[state].status != DmtxStatusComplete)
             StreamCopy(&(streamsBest[state]), &(streamsTemp[state]));
@@ -158,7 +158,7 @@ EncodeOptimizeBest(DmtxByteList *input, DmtxByteList *output, int sizeIdxRequest
 
    /* Choose the overall winner */
    winner = NULL;
-   for(state = (SchemeState)0; state < SchemeStateCount; state = SchemeState(int(state)+1))
+   for(state = (enum SchemeState)0; state < SchemeStateCount; state = (enum SchemeState)((int)state+1))
    {
       if(streamsBest[state].status == DmtxStatusComplete)
       {
@@ -208,7 +208,7 @@ StreamAdvanceFromBest(DmtxEncodeStream *streamsNext, DmtxEncodeStream *streamsBe
    else
       encodeOption = DmtxEncodeNormal;
 
-   for(fromState = (SchemeState)0; fromState < SchemeStateCount; fromState = SchemeState(int(fromState)+1))
+   for(fromState = (enum SchemeState)0; fromState < SchemeStateCount; fromState = (enum SchemeState)((int)fromState+1))
    {
       if(streamsBest[fromState].status != DmtxStatusEncoding ||
             ValidStateSwitch(fromState, targetState) == DmtxFalse)
